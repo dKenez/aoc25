@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::fs;
+use std::time::Instant;
 
 fn read_input(file_path: &str) -> Result<Vec<i32>, Box<dyn Error>> {
     let contents = fs::read_to_string(file_path)?;
@@ -70,6 +71,7 @@ pub fn entry() {
 
     let file_path_test = "data/day1_test.txt";
     let file_path = "data/day1.txt";
+    let iterations = 100;
 
     println!("=== Challenge 1 ===");
     match first_challenge(file_path_test) {
@@ -77,10 +79,16 @@ pub fn entry() {
         Err(e) => eprintln!("Error in test: {}", e),
     }
 
+    let start = Instant::now();
+    for _ in 0..iterations {
+        let _ = first_challenge(file_path);
+    }
+    let duration = start.elapsed();
     match first_challenge(file_path) {
         Ok(result) => println!("Result: {}", result),
         Err(e) => eprintln!("Error: {}", e),
     }
+    println!("Average time on {:?} iterations: {:?}", iterations, duration / iterations);
 
     println!("=== Challenge 2 ===");
     match second_challenge(file_path_test) {
@@ -88,8 +96,14 @@ pub fn entry() {
         Err(e) => eprintln!("Error in test: {}", e),
     }
 
+    let start = Instant::now();
+    for _ in 0..iterations {
+        let _ = second_challenge(file_path);
+    }
+    let duration = start.elapsed();
     match second_challenge(file_path) {
         Ok(result) => println!("Result: {}", result),
         Err(e) => eprintln!("Error: {}", e),
     }
+    println!("Average time on {:?} iterations: {:?}", iterations, duration / iterations);
 }

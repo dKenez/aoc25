@@ -2,6 +2,7 @@ use std::collections::HashSet;
 use std::error::Error;
 use std::fs;
 use std::num::ParseIntError;
+use std::time::Instant;
 
 fn read_input(file_path: &str) -> Result<Vec<(u64, u64)>, Box<dyn Error>> {
     let contents = fs::read_to_string(file_path)?;
@@ -56,6 +57,8 @@ fn get_range_bounds_by_repetition(
 
         let first = &range_start_str[..part_size].parse::<u64>()?;
 
+        // let second = &range_start_str[part_size..2 * part_size].parse::<u64>()?;
+
         let rest: Result<Vec<u64>, ParseIntError> = (1..repeat)
             .map(|part| {
                 let start = part * part_size;
@@ -65,15 +68,21 @@ fn get_range_bounds_by_repetition(
             .collect();
 
         let vec = rest?;
-        let max = vec.iter().max().ok_or("Vector is empty")?;
+        // let max = vec.iter().max().ok_or("Vector is empty")?;
         // println!("Max value: {}", max);
         // let last = &range_start_str[l / 2..].parse::<u64>()?;
 
-        if first >= &max {
-            lower_bound = *first;
-        } else {
-            lower_bound = *first + 1;
-        };
+        // if first >= second {
+        //     lower_bound = *first;
+        // } else {
+        //     lower_bound = *first + 1;
+        // };
+
+        lower_bound = vec
+            .iter()
+            .find(|&&n| first != &n)
+            .map(|n| if first > n { *first } else { *first + 1 })
+            .unwrap_or(*first);
     } else {
         let base: u64 = 10;
         lower_bound = base.pow((start_len / repeat) as u32);
@@ -84,6 +93,7 @@ fn get_range_bounds_by_repetition(
         let part_size = end_len / repeat;
 
         let first = &range_end_str[..part_size].parse::<u64>()?;
+        // let second = &range_end_str[part_size..2 * part_size].parse::<u64>()?;
 
         let rest: Result<Vec<u64>, ParseIntError> = (1..repeat)
             .map(|part| {
@@ -94,16 +104,16 @@ fn get_range_bounds_by_repetition(
             .collect();
 
         let vec = rest?;
-        let min = vec.iter().min().ok_or("Vector is empty")?;
+        // let min = vec.iter().min().ok_or("Vector is empty")?;
         // println!("Min value: {}", min);
         // println!("first value: {}", first);
         // let last = &range_start_str[l / 2..].parse::<u64>()?;
-
-        if first <= &min {
-            upper_bound = *first;
-        } else {
-            upper_bound = *first - 1;
-        };
+        // upper_bound = *first;
+        upper_bound = vec
+            .iter()
+            .find(|&&n| first != &n)
+            .map(|n| if first < n { *first } else { *first - 1 })
+            .unwrap_or(*first);
     } else {
         let base: u64 = 10;
         upper_bound = base.pow((end_len / repeat) as u32) - 1;
@@ -152,12 +162,13 @@ fn second_challenge(file_path: &str) -> Result<u64, Box<dyn Error>> {
 
     let mut acc: u64 = 0;
 
+    let mut seen_numbers: HashSet<u64> = HashSet::new();
     for range in ranges.iter() {
         // println!("Range: {:?} {:?}", range.0, range.1);
         let range_bounds = get_range_bounds(range.0, range.1)?;
 
-        let mut seen_numbers: HashSet<u64> = HashSet::new();
         for (range_start, range_end, repeat) in range_bounds.iter() {
+            // println!("\tBounds: {:?}-{:?} r{:?}", range_start, range_end, repeat);
             for n in *range_start..=*range_end {
                 let r = n.to_string().repeat(*repeat as usize).parse::<u64>()?;
 
@@ -180,6 +191,7 @@ pub fn entry() {
 
     let file_path_test = "data/day2_test.txt";
     let file_path = "data/day2.txt";
+    let iterations = 100;
 
     println!("=== Challenge 1 ===");
     match first_challenge(file_path_test) {
@@ -187,10 +199,20 @@ pub fn entry() {
         Err(e) => eprintln!("Error in test: {}", e),
     }
 
+    let start = Instant::now();
+    for _ in 0..iterations {
+        let _ = first_challenge(file_path);
+    }
+    let duration = start.elapsed();
     match first_challenge(file_path) {
         Ok(result) => println!("Result: {}", result),
         Err(e) => eprintln!("Error: {}", e),
     }
+    println!(
+        "Average time on {:?} iterations: {:?}",
+        iterations,
+        duration / iterations
+    );
 
     println!("=== Challenge 2 ===");
     match second_challenge(file_path_test) {
@@ -198,8 +220,18 @@ pub fn entry() {
         Err(e) => eprintln!("Error in test: {}", e),
     }
 
+    let start = Instant::now();
+    for _ in 0..iterations {
+        let _ = second_challenge(file_path);
+    }
+    let duration = start.elapsed();
     match second_challenge(file_path) {
         Ok(result) => println!("Result: {}", result),
         Err(e) => eprintln!("Error: {}", e),
     }
+    println!(
+        "Average time on {:?} iterations: {:?}",
+        iterations,
+        duration / iterations
+    );
 }
