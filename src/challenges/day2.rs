@@ -68,15 +68,6 @@ fn get_range_bounds_by_repetition(
             .collect();
 
         let vec = rest?;
-        // let max = vec.iter().max().ok_or("Vector is empty")?;
-        // println!("Max value: {}", max);
-        // let last = &range_start_str[l / 2..].parse::<u64>()?;
-
-        // if first >= second {
-        //     lower_bound = *first;
-        // } else {
-        //     lower_bound = *first + 1;
-        // };
 
         lower_bound = vec
             .iter()
@@ -104,11 +95,7 @@ fn get_range_bounds_by_repetition(
             .collect();
 
         let vec = rest?;
-        // let min = vec.iter().min().ok_or("Vector is empty")?;
-        // println!("Min value: {}", min);
-        // println!("first value: {}", first);
-        // let last = &range_start_str[l / 2..].parse::<u64>()?;
-        // upper_bound = *first;
+        
         upper_bound = vec
             .iter()
             .find(|&&n| first != &n)

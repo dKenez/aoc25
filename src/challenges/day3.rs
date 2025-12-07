@@ -14,7 +14,7 @@ fn read_input(file_path: &str) -> Result<Vec<Vec<u8>>, Box<dyn Error>> {
                 .filter(|s| !s.is_empty())
                 .map(|s| s.parse::<u8>())
                 .collect();
-            // let bank: Result<Vec<u8>, _> = line.split("").map(|i| i.parse::<u8>()).collect();
+            
             bank.map_err(|e| e.into())
         })
         .collect();

@@ -24,9 +24,6 @@ fn read_input(file_path: &str) -> Result<Vec<Vec<u8>>, Box<dyn Error>> {
 
 fn zero_padding(matrix: Vec<Vec<u8>>) -> Vec<Vec<u8>> {
     let w = matrix[0].len();
-    // let h = matrix.len();
-
-    // println!("prev(w,h): ({:?}, {:?})", w, h);
 
     let mut padded_matrix: Vec<Vec<u8>> = matrix
         .iter()
@@ -42,8 +39,6 @@ fn zero_padding(matrix: Vec<Vec<u8>>) -> Vec<Vec<u8>> {
     padded_matrix.insert(0, vec![0; w + 2]);
     padded_matrix.push(vec![0; w + 2]);
     // println!("padded_matrix: {:?}", padded_matrix);
-    // let padded_matrix = matrix.clone();
-    // padded_matrix.qu
 
     return padded_matrix;
 }
