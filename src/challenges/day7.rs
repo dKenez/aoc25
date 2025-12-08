@@ -1,7 +1,5 @@
 use std::error::Error;
 use std::fs;
-// use std::iter::zip;
-// use std::num::ParseIntError;
 use std::ops::Add;
 use std::time::Instant;
 

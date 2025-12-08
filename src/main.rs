@@ -1,9 +1,9 @@
 mod challenges;
 
-use challenges::{day1, day2, day3, day4, day5, day6, day7};
+use challenges::{day1, day2, day3, day4, day5, day6, day7, day8};
 
 fn main() {
-    let day = 0; // Set to 0 to run all, or specific day number
+    let day = 8; // Set to 0 to run all, or specific day number
 
     if day == 0 {
         // Run all days
@@ -25,6 +25,7 @@ fn main() {
             5 => day5::entry(),
             6 => day6::entry(),
             7 => day7::entry(),
+            8 => day8::entry(),
             _ => println!("Invalid day selected!: {}", day),
         };
     }
