@@ -1,8 +1,6 @@
 use std::collections::HashSet;
 use std::error::Error;
 use std::fs;
-use std::num::ParseIntError;
-use std::thread::AccessError;
 use std::time::Instant;
 
 fn read_input(file_path: &str) -> Result<Vec<(i64, i64, i64)>, Box<dyn Error>> {
@@ -65,50 +63,6 @@ fn merge_connections(connections: Vec<HashSet<usize>>) -> Vec<HashSet<usize>> {
     new_connection_groups.sort_by_key(|s| -(s.len() as i32));
     new_connection_groups
 }
-
-// fn merge_connections_2(connections: Vec<HashSet<usize>>) -> HashSet<usize> {
-//     let mut new_connection_groups = connections.clone();
-
-//     let mut curr_len = new_connection_groups.len();
-//     let mut prev_len = 0;
-
-//     let mut last_connection = HashSet::new();
-
-//     while curr_len != prev_len || curr_len == 1 {
-//         new_connection_groups = new_connection_groups.iter().fold(
-//             vec![],
-//             |connection_groups: Vec<HashSet<usize>>, curr_set| {
-//                 let mut merged_connection_groups = connection_groups.clone();
-
-//                 let mut found_connection_group = false;
-
-//                 for (i, set) in merged_connection_groups.iter().enumerate() {
-//                     let intersection: HashSet<_> = set.intersection(curr_set).collect();
-//                     if intersection.len() > 0 {
-//                         merged_connection_groups[i] = set.union(curr_set).copied().collect();
-//                         found_connection_group = true;
-//                         break;
-//                     }
-//                 }
-
-//                 if !found_connection_group {
-//                     merged_connection_groups.push(curr_set.clone());
-//                 }
-
-//                 if merged_connection_groups.len() == 1 {
-//                     last_connection = curr_set.clone();
-//                 }
-//                 merged_connection_groups
-//             },
-//         );
-
-//         prev_len = curr_len;
-//         curr_len = new_connection_groups.len();
-//     }
-
-//     // new_connection_groups.sort_by_key(|s| -(s.len() as i32));
-//     last_connection
-// }
 
 fn first_challenge(file_path: &str, connections: usize) -> Result<u64, Box<dyn Error>> {
     let vector_list = read_input(file_path)?;
@@ -187,14 +141,8 @@ fn second_challenge(file_path: &str) -> Result<u64, Box<dyn Error>> {
     smallest_distances.sort_by(|a, b| a.1.total_cmp(&b.1));
 
     let mut acc_set: HashSet<usize> = HashSet::new();
-    let mut acc_set_len = 0;
     for s in smallest_distances.iter() {
         acc_set = acc_set.union(&s.0).copied().collect();
-
-        if acc_set.len() != acc_set_len {
-            acc_set_len = acc_set.len();
-            // println!("new connection: {:?} {:?}", acc_set.len(),  s.0);
-        }
 
         if acc_set.len() == len {
             acc_set = s.0.clone();
