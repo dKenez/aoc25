@@ -3,17 +3,17 @@ use std::error::Error;
 use std::fs;
 use std::time::Instant;
 
-fn read_input(file_path: &str) -> Result<Vec<(i64, i64, i64)>, Box<dyn Error>> {
+fn read_input(file_path: &str) -> Result<Vec<(u32, u32, u32)>, Box<dyn Error>> {
     let contents = fs::read_to_string(file_path)?;
 
-    let vector_list: Result<Vec<(i64, i64, i64)>, _> = contents
+    let vector_list: Result<Vec<(u32, u32, u32)>, _> = contents
         .lines()
         .filter(|line| !line.is_empty())
         .map(|row| {
             let parsed_vec = row
                 .split(",")
-                .map(|x| x.parse::<i64>())
-                .collect::<Result<Vec<i64>, _>>()?;
+                .map(|x| x.parse::<u32>())
+                .collect::<Result<Vec<u32>, _>>()?;
 
             match parsed_vec.len() {
                 3 => Ok((parsed_vec[0], parsed_vec[1], parsed_vec[2])),
@@ -68,8 +68,8 @@ fn first_challenge(file_path: &str, connections: usize) -> Result<u64, Box<dyn E
     let vector_list = read_input(file_path)?;
 
     // println!("vectors:\n{:?}", vector_list);
-    let mut smallest_distances: Vec<(HashSet<usize>, f64)> =
-        vec![(HashSet::new(), f64::INFINITY); connections];
+    let mut smallest_distances: Vec<(HashSet<usize>, f32)> =
+        vec![(HashSet::new(), f32::MAX); connections];
 
     for (i, box_1) in vector_list.iter().enumerate() {
         for (j, box_2) in vector_list.iter().enumerate() {
@@ -79,7 +79,7 @@ fn first_challenge(file_path: &str, connections: usize) -> Result<u64, Box<dyn E
 
             let distance = (((box_1.0 - box_2.0).pow(2)
                 + (box_1.1 - box_2.1).pow(2)
-                + (box_1.2 - box_2.2).pow(2)) as f64)
+                + (box_1.2 - box_2.2).pow(2)) as f32)
                 .sqrt();
 
             let last = match smallest_distances.last() {
@@ -122,7 +122,7 @@ fn second_challenge(file_path: &str) -> Result<u64, Box<dyn Error>> {
 
     let len = vector_list.len();
 
-    let mut smallest_distances: Vec<(HashSet<usize>, f64)> = vec![];
+    let mut smallest_distances: Vec<(HashSet<usize>, f32)> = vec![];
 
     for (i, box_1) in vector_list.iter().enumerate() {
         for (j, box_2) in vector_list.iter().enumerate() {
@@ -132,7 +132,7 @@ fn second_challenge(file_path: &str) -> Result<u64, Box<dyn Error>> {
 
             let distance = (((box_1.0 - box_2.0).pow(2)
                 + (box_1.1 - box_2.1).pow(2)
-                + (box_1.2 - box_2.2).pow(2)) as f64)
+                + (box_1.2 - box_2.2).pow(2)) as f32)
                 .sqrt();
 
             smallest_distances.push((HashSet::from([i, j]), distance));
